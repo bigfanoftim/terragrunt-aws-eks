@@ -36,7 +36,7 @@ remote_state {
   backend = "s3"
   config  = {
     encrypt = true
-    bucket  = "bigfanoftim-terragrunt-tf-state-${local.account_name}-${local.aws_region}"
+    bucket  = "terragrunt-aws-eks-tf-state-${local.account_name}-${local.aws_region}"
     key     = "${path_relative_to_include()}/tf.tfstate"
     region  = local.aws_region
     profile = local.aws_profile
