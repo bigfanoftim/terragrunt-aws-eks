@@ -86,8 +86,8 @@ variable "eks_cluster_security_group" {
 # ---------------------------------------------------------------------------------------------------------------------
 # node group
 # ---------------------------------------------------------------------------------------------------------------------
-variable "node_group" {
-  type = object({
+variable "node_groups" {
+  type = map(object({
     node_group_name      = string
     subnet_ids           = list(string)
     ami_type             = string
@@ -106,5 +106,5 @@ variable "node_group" {
       ec2_ssh_key               = string
       source_security_group_ids = optional(list(string))
     })
-  })
+  }))
 }

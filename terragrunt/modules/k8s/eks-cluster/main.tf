@@ -101,26 +101,28 @@ resource "aws_vpc_security_group_egress_rule" "eks_cluster" {
 # node group
 # ---------------------------------------------------------------------------------------------------------------------
 resource "aws_eks_node_group" "this" {
+  for_each = var.node_groups
+
   cluster_name  = aws_eks_cluster.this.name
   node_role_arn = aws_iam_role.node_group.arn
 
-  node_group_name      = var.node_group.node_group_name
-  subnet_ids           = var.node_group.subnet_ids
-  ami_type             = var.node_group.ami_type
-  capacity_type        = var.node_group.capacity_type
-  disk_size            = var.node_group.disk_size
-  force_update_version = var.node_group.force_update_version
-  instance_types       = var.node_group.instance_types
+  node_group_name      = each.value.node_group_name
+  subnet_ids           = each.value.subnet_ids
+  ami_type             = each.value.ami_type
+  capacity_type        = each.value.capacity_type
+  disk_size            = each.value.disk_size
+  force_update_version = each.value.force_update_version
+  instance_types       = each.value.instance_types
 
   scaling_config {
-    desired_size = var.node_group.scaling_config.desired_size
-    max_size     = var.node_group.scaling_config.max_size
-    min_size     = var.node_group.scaling_config.min_size
+    desired_size = each.value.scaling_config.desired_size
+    max_size     = each.value.scaling_config.max_size
+    min_size     = each.value.scaling_config.min_size
   }
 
   remote_access {
-    ec2_ssh_key               = var.node_group.remote_access.ec2_ssh_key
-    source_security_group_ids = var.node_group.remote_access.source_security_group_ids == null ? null : var.node_group.remote_access.source_security_group_ids
+    ec2_ssh_key               = each.value.remote_access.ec2_ssh_key
+    source_security_group_ids = each.value.remote_access.source_security_group_ids == null ? null : each.value.remote_access.source_security_group_ids
   }
 
   depends_on = [
