@@ -14,12 +14,11 @@ variable "internet_gateway" {
   }
 }
 
-variable "subnets" {
+variable "public_subnets" {
   type = map(object({
-    az                      = string
-    cidr_block              = string
-    map_public_ip_on_launch = bool
-    tags                    = map(string)
+    az         = string
+    cidr_block = string
+    tags       = map(string)
   }))
 }
 

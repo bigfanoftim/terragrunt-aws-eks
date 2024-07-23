@@ -15,8 +15,8 @@ resource "aws_internet_gateway" "this" {
   tags   = var.internet_gateway.tags
 }
 
-resource "aws_subnet" "this" {
-  for_each = var.subnets
+resource "aws_subnet" "public" {
+  for_each = var.public_subnets
 
   vpc_id            = aws_vpc.this.id
   availability_zone = each.value.az
@@ -28,7 +28,7 @@ resource "aws_subnet" "this" {
   enable_resource_name_dns_aaaa_record_on_launch = false
   ipv6_native                                    = false
 
-  map_public_ip_on_launch             = each.value.map_public_ip_on_launch
+  map_public_ip_on_launch             = true
   private_dns_hostname_type_on_launch = "ip-name"
 
   tags = each.value.tags
@@ -43,4 +43,11 @@ resource "aws_route_table" "public" {
   vpc_id = aws_vpc.this.id
 
   tags = var.public_route_table.tags
+}
+
+resource "aws_route_table_association" "public" {
+  for_each = aws_subnet.public
+
+  subnet_id      = each.value.id
+  route_table_id = aws_route_table.public.id
 }
